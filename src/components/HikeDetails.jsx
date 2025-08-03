@@ -1,15 +1,15 @@
 import React from 'react';
-import Map from './Map';
-import HikeStats from './HikeStats';
+import GroupCoordination from './GroupCoordination';
 import HikeInfo from './HikeInfo';
 import HikeItinerary from './HikeItinerary';
 import HikeSafety from './HikeSafety';
-import GroupCoordination from './GroupCoordination';
+import HikeStats from './HikeStats';
+import Map from './Map';
 
 const HikeDetails = ({ hikeData }) => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="relative h-[500px] w-full">
+      <div className="relative h-[720px] w-full">
         <Map 
           gpxFile={hikeData.gpxFile} 
           trailhead={hikeData.trailhead}

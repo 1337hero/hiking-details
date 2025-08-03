@@ -1,7 +1,7 @@
 export const thompsonPeakData = {
   name: "Thompson Peak via Alpine Way Trail",
   location: "Sawtooth Wilderness, Idaho",
-  summitElevation: "10,751 ft (3,277 m)",
+  summitElevation: "10,751 ft",
   gpxFile: "/thompson-peak-trail.gpx", // Place GPX file in public/
   trailhead: {
     lat: 44.1529,
@@ -18,8 +18,8 @@ export const thompsonPeakData = {
   stats: {
     distance: "12.4 mi round-trip",
     elevationGain: "4,100 ft",
-    duration: "7–9 hours",
-    difficulty: "Hard (Class 3 scramble)"
+    duration: "5-7 hours",
+    difficulty: "Hard"
   },
   info: {
     overview:
@@ -31,23 +31,22 @@ export const thompsonPeakData = {
       "Unnamed alpine lake at ~9,000 ft elevation",
       "Class 3 scramble in the upper cirque",
       "360° panoramic views of the jagged Sawtooth skyline",
-      "Wildflowers in mid-summer",
       "One of Idaho's classic peak-bagging routes"
     ],
     routeDescription: [
       "Fishhook Creek Trail (0-0.8 mi): Start in forest with switchbacks; junction to Marshall & Island Lakes",
       "Turn north into aspen ridge; intersect Alpine Way Trail at ~1.7 mi",
       "Continue Alpine Way to ~3.7 mi; leave trail at faint climber's path",
-      "Traverse through basin above unnamed alpine lake (~9,000 ft)",
+      "Traverse through basin above alpine lake (~9,000 ft)",
       "Navigate talus/boulder fields toward Thompson-Williams saddle",
       "Final ascent: Class 3 scrambling up couloir/gully to summit"
     ],
     gettingThere:
       "Start at the Redfish Lake Trailhead near Stanley, ID. Parking is available at Redfish Lake Lodge and adjacent lots. From Boise/Meridian, expect about a 3-hour drive. The hike begins on the Alpine Way Trail, branching toward Williams Peak Divide before heading off-trail for the final summit push.",
     whatToBring: [
-      "At least 3 liters of water (no reliable sources past the lakes)",
+      "At least 3 liters of water",
       "Plenty of trail snacks and a packed lunch",
-      "Trekking poles for the ascent/descent",
+      "Trekking poles if desired for the ascent/descent",
       "GPS or map/compass for the scramble route",
       "Helmet if you’re concerned about loose rock on the scramble",
       "Sun protection (hat, sunglasses, sunscreen)",

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Map, { Source, Layer } from 'react-map-gl';
 import { parseGPX } from '../utils/gpxParser';
+import { USFSLayers } from '../data/usfs-layers';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
@@ -8,6 +9,9 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
 const MapComponent = ({ gpxFile, trailhead, waypoints }) => {
   const [geoJson, setGeoJson] = useState(null);
   const [bounds, setBounds] = useState(null);
+  const [showUSFSTrails, setShowUSFSTrails] = useState(true);
+  const [showUSFSRaster, setShowUSFSRaster] = useState(true);
+  const [mapRef, setMapRef] = useState(null);
   const [viewport, setViewport] = useState({
     longitude: trailhead?.lng || -122.4,
     latitude: trailhead?.lat || 37.8,
@@ -39,6 +43,31 @@ const MapComponent = ({ gpxFile, trailhead, waypoints }) => {
       });
     }
   }, [gpxFile]);
+
+  // Update layer visibility when state changes
+  useEffect(() => {
+    if (mapRef) {
+      const map = mapRef;
+      
+      // Update USFS trails visibility
+      if (map.getLayer('usfs-trails-layer')) {
+        map.setLayoutProperty(
+          'usfs-trails-layer',
+          'visibility',
+          showUSFSTrails ? 'visible' : 'none'
+        );
+      }
+      
+      // Update USFS raster visibility
+      if (map.getLayer('usfs-raster-layer')) {
+        map.setLayoutProperty(
+          'usfs-raster-layer',
+          'visibility',
+          showUSFSRaster ? 'visible' : 'none'
+        );
+      }
+    }
+  }, [showUSFSTrails, showUSFSRaster, mapRef]);
 
   // Main trail line
   const lineLayer = {
@@ -173,31 +202,99 @@ const MapComponent = ({ gpxFile, trailhead, waypoints }) => {
     }
   };
 
+  // USFS trails layer styling
+  const usfsTrailsLayer = {
+    id: 'usfs-trails-layer',
+    type: 'line',
+    source: 'usfs-trails',
+    paint: {
+      'line-color': [
+        'case',
+        ['==', ['get', 'TRAIL_CLASS'], 'DEVELOPED-HEAVY USE TRAIL'],
+        '#006400',  // Dark green for main trails
+        ['==', ['get', 'TRAIL_CLASS'], 'DEVELOPED-MODERATE USE TRAIL'],
+        '#228B22',  // Forest green for moderate trails
+        '#32CD32'   // Lime green for other trails
+      ],
+      'line-width': [
+        'case',
+        ['==', ['get', 'TRAIL_CLASS'], 'DEVELOPED-HEAVY USE TRAIL'],
+        3,
+        2
+      ],
+      'line-opacity': 0.8,
+      'line-dasharray': [
+        'case',
+        ['==', ['get', 'TRAIL_TYPE'], 'TERRA TRAIL'],
+        [0, 0],  // Solid line for terra trails
+        [2, 2]   // Dashed for other trails
+      ]
+    }
+  };
+
+  // USFS raster layer (if available)
+  const usfsRasterLayer = {
+    id: 'usfs-raster-layer',
+    type: 'raster',
+    source: 'usfs-raster',
+    paint: {
+      'raster-opacity': 0.5
+    },
+    minzoom: 5,
+    maxzoom: 16
+  };
+
   return (
-    <Map
+    <div className="relative w-full h-full">
+      <Map
       {...viewport}
       onMove={evt => setViewport(evt.viewState)}
       style={{ width: '100%', height: '100%' }}
       mapStyle="mapbox://styles/mapbox/outdoors-v12"
       mapboxAccessToken={MAPBOX_TOKEN}
       onLoad={(e) => {
+        const map = e.target;
+        setMapRef(map);
+        
+        // Fit bounds if available
         if (bounds) {
-          e.target.fitBounds(bounds, {
+          map.fitBounds(bounds, {
             padding: { top: 50, bottom: 50, left: 50, right: 50 },
             duration: 1000
           });
         }
+        
+        // Add USFS trails data source
+        map.addSource('usfs-trails', {
+          type: 'geojson',
+          data: USFSLayers.trails.sawtooth
+        });
+        
+        // Add USFS raster tiles - Using CalTopo USFS layer
+        map.addSource('usfs-raster', {
+          type: 'raster',
+          tiles: USFSLayers.rasterTiles.caltopoUSFS.tiles,
+          tileSize: 256,
+          attribution: USFSLayers.rasterTiles.caltopoUSFS.attribution,
+          maxzoom: USFSLayers.rasterTiles.caltopoUSFS.maxZoom
+        });
+        
+        // Add the layers
+        map.addLayer({
+          ...usfsRasterLayer,
+          layout: {
+            visibility: showUSFSRaster ? 'visible' : 'none'
+          }
+        }, 'route-outline');
+        
+        map.addLayer({
+          ...usfsTrailsLayer,
+          layout: {
+            visibility: showUSFSTrails ? 'visible' : 'none'
+          }
+        }, 'route-outline');
       }}
-      terrain={{ source: 'mapbox-dem', exaggeration: 1.5 }}
     >
-      {/* Add terrain source for 3D effect */}
-      <Source
-        id="mapbox-dem"
-        type="raster-dem"
-        url="mapbox://mapbox.mapbox-terrain-dem-v1"
-        tileSize={512}
-        maxzoom={14}
-      />
       
       {/* Trail route layers */}
       {geoJson && (
@@ -225,6 +322,7 @@ const MapComponent = ({ gpxFile, trailhead, waypoints }) => {
         </>
       )}
     </Map>
+    </div>
   );
 };
 
