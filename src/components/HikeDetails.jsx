@@ -8,22 +8,38 @@ import Map from "./Map";
 const HikeDetails = ({ hikeData }) => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="relative h-[720px] w-full">
+      <div className="relative h-[50vh] sm:h-[60vh] lg:h-[720px] w-full">
         <Map
           gpxFile={hikeData.gpxFile}
           trailhead={hikeData.trailhead}
           waypoints={hikeData.waypoints}
         />
+        
+        {/* Mobile-optimized title overlay */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-4 sm:p-6 lg:hidden">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">{hikeData.name}</h1>
+          <p className="text-sm sm:text-base text-gray-200">{hikeData.location}</p>
+          {hikeData.summitElevation && (
+            <p className="text-xs sm:text-sm text-gray-300 mt-0.5">Summit: {hikeData.summitElevation}</p>
+          )}
+        </div>
+        
+        {/* Scroll indicator for mobile */}
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 lg:hidden animate-bounce">
+          <svg className="w-6 h-6 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <header className="mb-4 sm:mb-8 lg:block hidden">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
             {hikeData.name}
           </h1>
-          <p className="text-xl text-gray-600">{hikeData.location}</p>
+          <p className="text-lg sm:text-xl text-gray-600">{hikeData.location}</p>
           {hikeData.summitElevation && (
-            <p className="text-lg text-gray-700 mt-1">
+            <p className="text-base sm:text-lg text-gray-700 mt-1">
               Summit: {hikeData.summitElevation}
             </p>
           )}
