@@ -1,11 +1,26 @@
 import React from 'react';
 
 const HikeInfo = ({ info }) => {
+  // Helper function to parse bold text
+  const parseBoldText = (text) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i}>{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <section className="mb-6">
         <h2 className="text-2xl font-semibold mb-3">Overview</h2>
-        <p className="text-gray-700 leading-relaxed">{info.overview}</p>
+        <div className="text-gray-700 leading-relaxed space-y-4">
+          {info.overview.split('\n\n').map((paragraph, index) => (
+            <p key={index}>{parseBoldText(paragraph)}</p>
+          ))}
+        </div>
       </section>
 
       {info.highlights && info.highlights.length > 0 && (

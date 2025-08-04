@@ -3,10 +3,10 @@ import React from 'react';
 const HikeSafety = ({ safetyNotes, weatherNotes, leaveNoTrace }) => {
   return (
     <div className="space-y-6 mt-8">
-      {/* Safety & Route-Finding */}
+      {/* Safety */}
       {safetyNotes && (
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-4">🛡️ Safety & Route-Finding</h2>
+          <h2 className="text-2xl font-bold mb-4">🛡️ Safety</h2>
           
           {safetyNotes.routeFinding && (
             <div className="mb-6">
@@ -20,11 +20,33 @@ const HikeSafety = ({ safetyNotes, weatherNotes, leaveNoTrace }) => {
           )}
           
           {safetyNotes.fitnessRequirements && (
-            <div>
+            <div className="mb-6">
               <h3 className="text-lg font-semibold mb-2">Fitness & Experience Requirements</h3>
               <ul className="list-disc list-inside space-y-1">
                 {safetyNotes.fitnessRequirements.map((req, index) => (
                   <li key={index} className="text-gray-700">{req}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          
+          {safetyNotes.weatherConsiderations && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">Weather Considerations</h3>
+              <ul className="list-disc list-inside space-y-1">
+                {safetyNotes.weatherConsiderations.map((consideration, index) => (
+                  <li key={index} className="text-gray-700">{consideration}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          
+          {safetyNotes.emergencyProtocol && (
+            <div>
+              <h3 className="text-lg font-semibold mb-2">Emergency Protocol</h3>
+              <ul className="list-disc list-inside space-y-1">
+                {safetyNotes.emergencyProtocol.map((protocol, index) => (
+                  <li key={index} className="text-gray-700">{protocol}</li>
                 ))}
               </ul>
             </div>
